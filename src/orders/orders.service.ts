@@ -9,6 +9,7 @@ import { Order, OrderStatus } from '../entities/order.entity';
 import { Candle } from '../entities/candle.entity';
 import { User } from '../auth/entity/user.entity';
 import { PaymentDetailsDto } from './dto/create-order.dto';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Injectable()
 export class OrdersService {
@@ -19,6 +20,7 @@ export class OrdersService {
     private readonly candleRepository: Repository<Candle>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly metricsService: MetricsService,
   ) {}
   async createOrder(data: Partial<Order>): Promise<Order> {
     try {
@@ -27,6 +29,9 @@ export class OrdersService {
       if (!saved) {
         throw new InternalServerErrorException('Order could not be created');
       }
+      
+      // Incrementar métrica de órdenes creadas (simplificada)
+      this.metricsService.incrementOrders();
       
       // Devolver la orden con las relaciones cargadas para las notificaciones
       const fullOrder = await this.orderRepository.findOne({
@@ -167,6 +172,10 @@ export class OrdersService {
         throw new NotFoundException('Order not found');
       }
       await this.orderRepository.update(id, { status });
+      
+      // Incrementar métrica (simplificada)
+      this.metricsService.incrementOrders();
+      
       return this.findOne(id);
     } catch (error) {
       console.error('Error in updateStatus order:', error);

@@ -17,6 +17,7 @@ import { OrderItem } from '../entities/order-item.entity';
 import { CloudinaryService } from '../common/services/cloudinary.service';
 import { QrGeneratorService } from '../common/services/qr-generator.service';
 import { LabelsService } from '../labels/labels.service';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Injectable()
 export class CandlesService {
@@ -38,6 +39,7 @@ export class CandlesService {
     private readonly cloudinaryService: CloudinaryService,
     private readonly qrGeneratorService: QrGeneratorService,
     private readonly labelsService: LabelsService,
+    private readonly metricsService: MetricsService,
   ) {}
 
   async createCandle(data: Partial<Candle>): Promise<Candle> {
@@ -47,6 +49,10 @@ export class CandlesService {
       if (!saved) {
         throw new InternalServerErrorException('Candle could not be created');
       }
+      
+      // Incrementar métrica de velas creadas
+      this.metricsService.incrementCandlesCreated();
+      
       return saved;
     } catch (error) {
       console.error('Error in createCandle:', error);

@@ -7,9 +7,14 @@ import { Candle } from '../entities/candle.entity';
 import { User } from '../auth/entity/user.entity';
 import { Gift } from '../entities/gift.entity';
 import { PassportModule } from '@nestjs/passport';
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, Candle, User, Gift]), PassportModule.register({ defaultStrategy: 'jwt' })],
+  imports: [
+    TypeOrmModule.forFeature([Order, Candle, User, Gift]), 
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    MetricsModule
+  ],
   controllers: [OrdersController],
   providers: [OrdersService],
   exports: [OrdersService, TypeOrmModule],

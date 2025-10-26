@@ -17,6 +17,7 @@ import { QrGeneratorService } from '../common/services/qr-generator.service';
 import { LabelsService } from '../labels/labels.service';
 import { Label } from '../entities/label.entity';
 import { AiModule } from '../ai/ai.module';
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AiModule } from '../ai/ai.module';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     AuthModule,
     AiModule,
+    MetricsModule,
   ],
   controllers: [CandlesController],
   providers: [
